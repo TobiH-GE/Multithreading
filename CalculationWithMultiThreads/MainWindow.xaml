@@ -1,14 +1,14 @@
-﻿<Window x:Class="CalculationWithOneThread.MainWindow"
+﻿<Window x:Class="CalculationWithMultiThreads.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:CalculationWithOneThread"
+        xmlns:local="clr-namespace:CalculationWithMultiThreads"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <StackPanel x:Name="spBars">
-            <Button x:Name="btnStartCalc" Width="120" Height="30" Content="Start" Click="StartCalc_Click"/>
+            <Button x:Name="btnStartCalcArraySegment" Width="120" Height="30" Content="Start Segment Calc" Click="StartCalcArraySegment_Click"/>
             <Button x:Name="btnStopCalc" Width="120" Height="30" Content="Stop" Click="StopCalc_Click"/>
             <ProgressBar x:Name="pbBar" Width="300" Height="30" Maximum="1000"/>
             <TextBox x:Name="tbOut" Width="300" Text=""/>
