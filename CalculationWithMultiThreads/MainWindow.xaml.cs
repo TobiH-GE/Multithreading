@@ -15,8 +15,8 @@ namespace CalculationWithMultiThreads
         
         CancellationTokenSource cancelTokenSource;
 
-        public int _threads;
-        public Int64 _numbers;
+        int _threads;
+        Int64 _numbers;
         Int64[] niceArray;
         List<ProgressBar> listWithPBars;
         Progress<int>[] progressComs;
@@ -152,7 +152,6 @@ namespace CalculationWithMultiThreads
         }
         public int CreateRandomArray(ref Int64[] array, IProgress<int> progress, CancellationToken CancelToken)
         {
-            ;
             int counter = 0;
             int divider = array.Length / 1000;
 
@@ -163,7 +162,7 @@ namespace CalculationWithMultiThreads
                 if (counter % divider == 0)
                 {
                     progress.Report(counter / divider);
-                    if (CancelToken.IsCancellationRequested) return 0;
+                    if (CancelToken.IsCancellationRequested) return -1;
                 }
             }
             return 1;
