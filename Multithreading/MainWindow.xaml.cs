@@ -15,10 +15,7 @@ namespace Multithreading
         const int threads = 4;
 
         Progress<int> progressCom;
-        Progress<int> progressCom1;
-        Progress<int> progressCom2;
-        Progress<int> progressCom3;
-        Progress<int> progressCom4;
+        Progress<int>[] progressComs = new Progress<int>[threads];
 
         Task<int> worker;
         Task<int>[] workers;
@@ -29,11 +26,13 @@ namespace Multithreading
         public MainWindow()
         {
             InitializeComponent();
+
             progressCom  = new Progress<int>((x) => refreshProgressBar(x, pbBar));
-            progressCom1 = new Progress<int>((x) => refreshProgressBar(x, pbBar1));
-            progressCom2 = new Progress<int>((x) => refreshProgressBar(x, pbBar2));
-            progressCom3 = new Progress<int>((x) => refreshProgressBar(x, pbBar3));
-            progressCom4 = new Progress<int>((x) => refreshProgressBar(x, pbBar4));
+
+            progressComs[0] = new Progress<int>((x) => refreshProgressBar(x, pbBar1));
+            progressComs[1] = new Progress<int>((x) => refreshProgressBar(x, pbBar2));
+            progressComs[2] = new Progress<int>((x) => refreshProgressBar(x, pbBar3));
+            progressComs[3] = new Progress<int>((x) => refreshProgressBar(x, pbBar4));
 
             StartGeneratingNumbers();
         }
@@ -79,12 +78,12 @@ namespace Multithreading
             {
                 segments[i] = new ArraySegment<int>(niceArray, (niceArray.Length / threads) * i, niceArray.Length / threads);
             }
+            workers[0] = new Task<int>(() => Calc(segments[0], progressComs[0], cancelTokenSource.Token));
+            workers[1] = new Task<int>(() => Calc(segments[1], progressComs[1], cancelTokenSource.Token));
+            workers[2] = new Task<int>(() => Calc(segments[2], progressComs[2], cancelTokenSource.Token));
+            workers[3] = new Task<int>(() => Calc(segments[3], progressComs[3], cancelTokenSource.Token));
 
             //TODO: allow more than 4 threads
-            workers[0] = new Task<int>(() => Calc(segments[0], progressCom1, cancelTokenSource.Token));
-            workers[1] = new Task<int>(() => Calc(segments[1], progressCom2, cancelTokenSource.Token));
-            workers[2] = new Task<int>(() => Calc(segments[2], progressCom3, cancelTokenSource.Token));
-            workers[3] = new Task<int>(() => Calc(segments[3], progressCom4, cancelTokenSource.Token));
             workers[0].Start();
             workers[1].Start();
             workers[2].Start();
@@ -107,11 +106,7 @@ namespace Multithreading
                 if (counter % divider == 0)
                 {
                     progress.Report(counter / divider);
-
-                    if (CancelToken.IsCancellationRequested)
-                    {
-                        return 0;
-                    }
+                    if (CancelToken.IsCancellationRequested) return 0;
                 }
             }
             return result;
@@ -129,11 +124,7 @@ namespace Multithreading
                 if (counter % divider == 0)
                 {
                     progress.Report(counter / divider);
-
-                    if (CancelToken.IsCancellationRequested)
-                    {
-                        return 0;
-                    }
+                    if (CancelToken.IsCancellationRequested) return 0;
                 }
             }
             return result;
@@ -151,11 +142,7 @@ namespace Multithreading
                 if (counter % divider == 0)
                 {
                     progress.Report(counter / divider);
-
-                    if (CancelToken.IsCancellationRequested)
-                    {
-                        return 0;
-                    }
+                    if (CancelToken.IsCancellationRequested) return 0;
                 }
             }
             return 1;
