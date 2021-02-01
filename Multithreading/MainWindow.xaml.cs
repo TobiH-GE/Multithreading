@@ -27,11 +27,11 @@ namespace Multithreading
         public MainWindow()
         {
             InitializeComponent();
-            progressCom = new Progress<int>(refreshProgressBar);
-            progressCom1 = new Progress<int>(refreshProgressBar);
-            progressCom2 = new Progress<int>(refreshProgressBar);
-            progressCom3 = new Progress<int>(refreshProgressBar);
-            progressCom4 = new Progress<int>(refreshProgressBar);
+            progressCom = new Progress<int>((x) => refreshProgressBar(x, pbBar));
+            progressCom1 = new Progress<int>((x) => refreshProgressBar(x, pbBar1));
+            progressCom2 = new Progress<int>((x) => refreshProgressBar(x, pbBar2));
+            progressCom3 = new Progress<int>((x) => refreshProgressBar(x, pbBar3));
+            progressCom4 = new Progress<int>((x) => refreshProgressBar(x, pbBar4));
 
             StartGeneratingNumbers();
         }
@@ -39,16 +39,17 @@ namespace Multithreading
         {
             tbOut.Text = "generating random numbers ...";
             tbOut.Background = Brushes.Red;
-            worker = new Task<int>(() => CreateRandomArray(ref niceArray, progressCom));
+            cancelTokenSource = new CancellationTokenSource();
+            worker = new Task<int>(() => CreateRandomArray(ref niceArray, progressCom, cancelTokenSource.Token));
             worker.Start();
             await Task.WhenAll(worker);
             tbOut.Background = Brushes.Green;
             tbOut.Text = worker.Result.ToString();
         }
 
-        private void refreshProgressBar(int reportedProgress)
+        private void refreshProgressBar(int reportedProgress, ProgressBar pb)
         {
-            pbBar.Value = reportedProgress;
+            pb.Value = reportedProgress;
         }
 
         private async void StartCalc_Click(object sender, RoutedEventArgs e)
@@ -62,7 +63,7 @@ namespace Multithreading
             tbOut.Background = Brushes.Green;
             tbOut.Text = worker.Result.ToString();
         }
-        private async void StartCalcArraySegment_Click(object sender, RoutedEventArgs e) //TODO: correct progress bars
+        private async void StartCalcArraySegment_Click(object sender, RoutedEventArgs e)
         {
             tbOut.Text = "calculating segments...";
             tbOut.Background = Brushes.Red;
@@ -132,7 +133,7 @@ namespace Multithreading
             return result;
         }
 
-        public int CreateRandomArray(ref int[] array, IProgress<int> progress)
+        public int CreateRandomArray(ref int[] array, IProgress<int> progress, CancellationToken CancelToken)
         {;
             int counter = 0;
             int divider = array.Length / 1000;
@@ -144,6 +145,11 @@ namespace Multithreading
                 if (counter % divider == 0)
                 {
                     progress.Report(counter / divider);
+
+                    if (CancelToken.IsCancellationRequested)
+                    {
+                        return 0;
+                    }
                 }
             }
             return 1;
