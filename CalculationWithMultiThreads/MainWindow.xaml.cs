@@ -45,7 +45,7 @@ namespace CalculationWithMultiThreads
 
                     for (int i = 0; i < _threads; i++)
                     {
-                        listWithPBars.Add(new ProgressBar() { Width = 300, Height = 30, Maximum = 1000 });
+                        listWithPBars.Add(new ProgressBar() { Width = 300, Height = 30, Maximum = 1000, Margin = new Thickness(2) });
                         spBars.Children.Add(listWithPBars[listWithPBars.Count - 1]);
                         int j = listWithPBars.Count - 1;
                         progressComs[i] = new Progress<int>((x) => refreshProgressBar(x, listWithPBars[j]));

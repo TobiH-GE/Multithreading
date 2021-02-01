@@ -5,16 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CalculationWithMultiThreads"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="800">
+        Title="MultiThreading by TobiH" Height="650" Width="800">
     <Grid>
         <StackPanel>
-            <TextBox x:Name="tbNumbers" Width="100" Margin="5" Text="{Binding Numbers, Mode=TwoWay}"/>
-            <Button x:Name="btnStartCalcSingleThread" Margin="5" Width="120" Height="30" Content="Start 1 Thread" Click="StartCalcSingleThread_Click"/>
-            <Button x:Name="btnStartCalcMultiThread" Margin="5" Width="120" Height="30" Content="Start x Threads" Click="StartCalcMultiThread_Click"/>
-            <Button x:Name="btnStopCalc" Margin="5" Width="120" Height="30" Content="Stop" Click="StopCalc_Click"/>
-            <Slider x:Name="sldThreads" Margin="5" Width="500" Minimum="1" Maximum="100" Value="{Binding Threads, Mode=TwoWay}"/>
-            <TextBox x:Name="tbThreads" Margin="5" Width="30" Text="{Binding Threads, Mode=TwoWay}"/>
-            <TextBox x:Name="tbOut" Width="300" Text=""/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                <TextBox x:Name="tbNumbers" Width="100" Margin="2" Text="{Binding Numbers, Mode=TwoWay}"/>
+                <Button x:Name="btnStartCalcSingleThread" Margin="2" Width="120" Height="30" Content="Start 1 Thread" Click="StartCalcSingleThread_Click"/>
+                <Button x:Name="btnStartCalcMultiThread" Margin="2" Width="120" Height="30" Content="Start x Threads" Click="StartCalcMultiThread_Click"/>
+                <Button x:Name="btnStopCalc" Margin="2" Width="120" Height="30" Content="Stop" Click="StopCalc_Click"/>
+                <TextBox x:Name="tbOut" Width="200" Height="30" Text=""/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Slider x:Name="sldThreads" Margin="2" Width="500" Minimum="1" Maximum="100" Value="{Binding Threads, Mode=TwoWay}"/>
+                <TextBox x:Name="tbThreads" Margin="2" Width="30" Text="{Binding Threads, Mode=TwoWay}"/>
+            </StackPanel>
             <StackPanel x:Name="spBars">
             </StackPanel>
         </StackPanel>
