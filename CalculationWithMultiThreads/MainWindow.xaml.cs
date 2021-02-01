@@ -16,8 +16,8 @@ namespace CalculationWithMultiThreads
         CancellationTokenSource cancelTokenSource;
 
         public int _threads;
-        public int _numbers;
-        int[] niceArray;
+        public Int64 _numbers;
+        Int64[] niceArray;
 
         Random rnd = new Random();
 
@@ -41,7 +41,7 @@ namespace CalculationWithMultiThreads
                 }
             }
         }
-        public int Numbers
+        public Int64 Numbers
         {
             get { return _numbers; }
             set
@@ -56,13 +56,13 @@ namespace CalculationWithMultiThreads
 
         private async void StartGeneratingNumbers()
         {
-            niceArray = new int[_numbers];
+            niceArray = new Int64[_numbers];
 
             spBars.Children.Clear();
 
             Progress<int>[] progressComs = new Progress<int>[1];
             List<ProgressBar> listWithPBars = new List<ProgressBar>();
-            Task<int>[] workers;
+            Task<Int64>[] workers;
 
             listWithPBars.Add(new ProgressBar() { Width = 300, Height = 30, Maximum = 1000 });
             spBars.Children.Add(listWithPBars[listWithPBars.Count - 1]);
@@ -71,8 +71,8 @@ namespace CalculationWithMultiThreads
             tbOut.Text = "generating random numbers ...";
             tbOut.Background = Brushes.Red;
             cancelTokenSource = new CancellationTokenSource();
-            workers = new Task<int>[1];
-            workers[0] = new Task<int>(() => CreateRandomArray(ref niceArray, progressComs[0], cancelTokenSource.Token));
+            workers = new Task<Int64>[1];
+            workers[0] = new Task<Int64>(() => CreateRandomArray(ref niceArray, progressComs[0], cancelTokenSource.Token));
             workers[0].Start();
             await Task.WhenAll(workers[0]);
             tbOut.Background = Brushes.Green;
@@ -88,7 +88,7 @@ namespace CalculationWithMultiThreads
 
             Progress<int>[] progressComs = new Progress<int>[_threads];
             List<ProgressBar> listWithPBars = new List<ProgressBar>();
-            Task<int>[] workers;
+            Task<Int64>[] workers;
 
             for (int i = 0; i < _threads; i++)
             {
@@ -101,25 +101,25 @@ namespace CalculationWithMultiThreads
             tbOut.Text = "calculating segments...";
             tbOut.Background = Brushes.Red;
 
-            ArraySegment<int>[] segments = new ArraySegment<int>[_threads];
+            ArraySegment<Int64>[] segments = new ArraySegment<Int64>[_threads];
 
             cancelTokenSource = new CancellationTokenSource();
-            workers = new Task<int>[_threads];
+            workers = new Task<Int64>[_threads];
 
             for (int i = 0; i < _threads; i++)
             {
                 int j = i;
                 if (niceArray.Length % _threads != 0 && i == _threads - 1)
-                    segments[i] = new ArraySegment<int>(niceArray, (niceArray.Length / _threads) * i, niceArray.Length / _threads + niceArray.Length % _threads);
+                    segments[i] = new ArraySegment<Int64>(niceArray, (niceArray.Length / _threads) * i, niceArray.Length / _threads + niceArray.Length % _threads);
                 else
-                    segments[i] = new ArraySegment<int>(niceArray, (niceArray.Length / _threads) * i, niceArray.Length / _threads);
-                workers[i] = new Task<int>(() => Calc(segments[j], progressComs[j], cancelTokenSource.Token));
+                    segments[i] = new ArraySegment<Int64>(niceArray, (niceArray.Length / _threads) * i, niceArray.Length / _threads);
+                workers[i] = new Task<Int64>(() => Calc(segments[j], progressComs[j], cancelTokenSource.Token));
                 workers[i].Start();
             }
             await Task.WhenAll(workers);
             tbOut.Background = Brushes.Green;
 
-            int result = 0;
+            Int64 result = 0;
             for (int i = 0; i < _threads; i++)
             {
                 result += workers[i].Result;
@@ -132,9 +132,9 @@ namespace CalculationWithMultiThreads
             Threads = 1;
             StartCalcMultiThread_Click(sender, e);
         }
-        public int Calc(ArraySegment<int> segementarray, IProgress<int> progress, CancellationToken CancelToken)
+        public Int64 Calc(ArraySegment<Int64> segementarray, IProgress<int> progress, CancellationToken CancelToken)
         {
-            int result = 0;
+            Int64 result = 0;
             int counter = 0;
             int divider = segementarray.Count / 1000;
 
@@ -150,7 +150,7 @@ namespace CalculationWithMultiThreads
             }
             return result;
         }
-        public int CreateRandomArray(ref int[] array, IProgress<int> progress, CancellationToken CancelToken)
+        public int CreateRandomArray(ref Int64[] array, IProgress<int> progress, CancellationToken CancelToken)
         {
             ;
             int counter = 0;
