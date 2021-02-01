@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,6 +17,7 @@ namespace Multithreading
 
         Progress<int> progressCom;
         Progress<int>[] progressComs = new Progress<int>[threads];
+        List<ProgressBar> listWithPBars = new List<ProgressBar>();
 
         Task<int> worker;
         Task<int>[] workers;
@@ -29,11 +31,13 @@ namespace Multithreading
 
             progressCom  = new Progress<int>((x) => refreshProgressBar(x, pbBar));
 
-            progressComs[0] = new Progress<int>((x) => refreshProgressBar(x, pbBar1));
-            progressComs[1] = new Progress<int>((x) => refreshProgressBar(x, pbBar2));
-            progressComs[2] = new Progress<int>((x) => refreshProgressBar(x, pbBar3));
-            progressComs[3] = new Progress<int>((x) => refreshProgressBar(x, pbBar4));
-
+            for (int i = 0; i < threads; i++)
+            {
+                listWithPBars.Add(new ProgressBar() { Width = 300, Height = 30, Maximum = 1000 });
+                spBars.Children.Add(listWithPBars[listWithPBars.Count - 1]);
+                int j = listWithPBars.Count - 1;
+                progressComs[i] = new Progress<int>((x) => refreshProgressBar(x, listWithPBars[j]));
+            }
             StartGeneratingNumbers();
         }
         private async void StartGeneratingNumbers()
@@ -76,21 +80,21 @@ namespace Multithreading
 
             for (int i = 0; i < threads; i++)
             {
+                int j = i;
                 segments[i] = new ArraySegment<int>(niceArray, (niceArray.Length / threads) * i, niceArray.Length / threads);
+                workers[i] = new Task<int>(() => Calc(segments[j], progressComs[j], cancelTokenSource.Token));
+                workers[i].Start();
             }
-            workers[0] = new Task<int>(() => Calc(segments[0], progressComs[0], cancelTokenSource.Token));
-            workers[1] = new Task<int>(() => Calc(segments[1], progressComs[1], cancelTokenSource.Token));
-            workers[2] = new Task<int>(() => Calc(segments[2], progressComs[2], cancelTokenSource.Token));
-            workers[3] = new Task<int>(() => Calc(segments[3], progressComs[3], cancelTokenSource.Token));
-
-            //TODO: allow more than 4 threads
-            workers[0].Start();
-            workers[1].Start();
-            workers[2].Start();
-            workers[3].Start();
             await Task.WhenAll(workers);
             tbOut.Background = Brushes.Green;
-            tbOut.Text = (workers[0].Result + workers[1].Result + workers[2].Result + workers[3].Result).ToString();
+
+            int result = 0;
+            for (int i = 0; i < threads; i++)
+            {
+                result += workers[i].Result;
+            }
+
+            tbOut.Text = result.ToString();
         }
 
         public int Calc(int[] array, IProgress<int> progress, CancellationToken CancelToken)
