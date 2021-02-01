@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CalculationWithMultiThreads"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="650" Width="800">
     <Grid>
         <StackPanel>
             <TextBox x:Name="tbNumbers" Width="100" Margin="5" Text="{Binding Numbers, Mode=TwoWay}"/>
