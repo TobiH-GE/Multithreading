@@ -12,6 +12,8 @@ namespace Multithreading
     /// </summary>
     public partial class MainWindow : Window
     {
+        const int threads = 4;
+
         Progress<int> progressCom;
         Progress<int> progressCom1;
         Progress<int> progressCom2;
@@ -27,7 +29,7 @@ namespace Multithreading
         public MainWindow()
         {
             InitializeComponent();
-            progressCom = new Progress<int>((x) => refreshProgressBar(x, pbBar));
+            progressCom  = new Progress<int>((x) => refreshProgressBar(x, pbBar));
             progressCom1 = new Progress<int>((x) => refreshProgressBar(x, pbBar1));
             progressCom2 = new Progress<int>((x) => refreshProgressBar(x, pbBar2));
             progressCom3 = new Progress<int>((x) => refreshProgressBar(x, pbBar3));
@@ -68,17 +70,21 @@ namespace Multithreading
             tbOut.Text = "calculating segments...";
             tbOut.Background = Brushes.Red;
 
-            ArraySegment<int> segement1Array = new ArraySegment<int>(niceArray,        0, 25000000);
-            ArraySegment<int> segement2Array = new ArraySegment<int>(niceArray, 25000000, 25000000);
-            ArraySegment<int> segement3Array = new ArraySegment<int>(niceArray, 50000000, 25000000);
-            ArraySegment<int> segement4Array = new ArraySegment<int>(niceArray, 75000000, 25000000);
+            ArraySegment<int>[] segments = new ArraySegment<int>[threads];
 
             cancelTokenSource = new CancellationTokenSource();
-            workers = new Task<int>[4];
-            workers[0] = new Task<int>(() => Calc(segement1Array, progressCom1, cancelTokenSource.Token));
-            workers[1] = new Task<int>(() => Calc(segement2Array, progressCom2, cancelTokenSource.Token));
-            workers[2] = new Task<int>(() => Calc(segement3Array, progressCom3, cancelTokenSource.Token));
-            workers[3] = new Task<int>(() => Calc(segement4Array, progressCom4, cancelTokenSource.Token));
+            workers = new Task<int>[threads];
+
+            for (int i = 0; i < threads; i++)
+            {
+                segments[i] = new ArraySegment<int>(niceArray, (niceArray.Length / threads) * i, niceArray.Length / threads);
+            }
+
+            //TODO: allow more than 4 threads
+            workers[0] = new Task<int>(() => Calc(segments[0], progressCom1, cancelTokenSource.Token));
+            workers[1] = new Task<int>(() => Calc(segments[1], progressCom2, cancelTokenSource.Token));
+            workers[2] = new Task<int>(() => Calc(segments[2], progressCom3, cancelTokenSource.Token));
+            workers[3] = new Task<int>(() => Calc(segments[3], progressCom4, cancelTokenSource.Token));
             workers[0].Start();
             workers[1].Start();
             workers[2].Start();
