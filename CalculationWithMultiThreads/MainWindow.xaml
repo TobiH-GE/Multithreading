@@ -11,7 +11,6 @@
             <Button x:Name="btnStartCalcSingleThread" Width="120" Height="30" Content="Start 1 Thread" Click="StartCalcSingleThread_Click"/>
             <Button x:Name="btnStartCalcMultiThread" Width="120" Height="30" Content="Start x Threads" Click="StartCalcMultiThread_Click"/>
             <Button x:Name="btnStopCalc" Width="120" Height="30" Content="Stop" Click="StopCalc_Click"/>
-            <ProgressBar x:Name="pbBar" Width="300" Height="30" Maximum="1000"/>
             <TextBox x:Name="tbOut" Width="300" Text=""/>
         </StackPanel>
     </Grid>
