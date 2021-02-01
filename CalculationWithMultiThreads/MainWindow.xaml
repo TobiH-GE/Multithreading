@@ -7,11 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <StackPanel x:Name="spBars">
-            <Button x:Name="btnStartCalcSingleThread" Width="120" Height="30" Content="Start 1 Thread" Click="StartCalcSingleThread_Click"/>
-            <Button x:Name="btnStartCalcMultiThread" Width="120" Height="30" Content="Start x Threads" Click="StartCalcMultiThread_Click"/>
-            <Button x:Name="btnStopCalc" Width="120" Height="30" Content="Stop" Click="StopCalc_Click"/>
+        <StackPanel>
+            <TextBox x:Name="tbNumbers" Width="100" Margin="5" Text="{Binding Numbers, Mode=TwoWay}"/>
+            <Button x:Name="btnStartCalcSingleThread" Margin="5" Width="120" Height="30" Content="Start 1 Thread" Click="StartCalcSingleThread_Click"/>
+            <Button x:Name="btnStartCalcMultiThread" Margin="5" Width="120" Height="30" Content="Start x Threads" Click="StartCalcMultiThread_Click"/>
+            <Button x:Name="btnStopCalc" Margin="5" Width="120" Height="30" Content="Stop" Click="StopCalc_Click"/>
+            <Slider x:Name="sldThreads" Margin="5" Width="500" Minimum="1" Maximum="100" Value="{Binding Threads, Mode=TwoWay}"/>
+            <TextBox x:Name="tbThreads" Margin="5" Width="30" Text="{Binding Threads, Mode=TwoWay}"/>
             <TextBox x:Name="tbOut" Width="300" Text=""/>
+            <StackPanel x:Name="spBars">
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>
