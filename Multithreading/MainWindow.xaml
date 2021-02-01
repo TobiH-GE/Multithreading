@@ -8,9 +8,15 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <StackPanel>
-            <Button x:Name="btnStartCalc" Width="100" Height="30" Content="Start" Click="StartCalc_Click"/>
+            <Button x:Name="btnStartCalc" Width="120" Height="30" Content="Start" Click="StartCalc_Click"/>
+            <Button x:Name="btnStartCalcArraySegment" Width="120" Height="30" Content="Start Segment Calc" Click="StartCalcArraySegment_Click"/>
+            <Button x:Name="btnStopCalc" Width="120" Height="30" Content="Stop" Click="StopCalc_Click"/>
             <ProgressBar x:Name="pbBar" Width="300" Height="30" Maximum="1000"/>
-            <TextBox x:Name="tbOut" Width="250" Text=""/>
+            <ProgressBar x:Name="pbBar1" Width="300" Height="30" Maximum="1000"/>
+            <ProgressBar x:Name="pbBar2" Width="300" Height="30" Maximum="1000"/>
+            <ProgressBar x:Name="pbBar3" Width="300" Height="30" Maximum="1000"/>
+            <ProgressBar x:Name="pbBar4" Width="300" Height="30" Maximum="1000"/>
+            <TextBox x:Name="tbOut" Width="300" Text=""/>
         </StackPanel>
     </Grid>
 </Window>
