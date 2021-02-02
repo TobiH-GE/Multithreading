@@ -75,9 +75,7 @@ namespace CalculationWithMultiThreads
         {
             niceArray = new Int64[_numbers];
 
-            listWithPBars = new List<ProgressBar>();
-            listWithPBars.Add(new ProgressBar() { Style = FindResource("ProgressBarStyle") as Style });
-            CreateAndShowPBars(listWithPBars);
+            CreateAndShowPBars(new List<ProgressBar>() { new ProgressBar() { Style = FindResource("ProgressBarStyle") as Style } });
 
             tbOut.Text = "generating random numbers ..."; tbOut.Background = Brushes.Red;
 
