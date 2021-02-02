@@ -39,18 +39,14 @@ namespace CalculationWithMultiThreads
                 if (_threads != value && value != -1)
                 {
                     _threads = value;
-                    spBars.Children.Clear();
                     listWithPBars = new List<ProgressBar>();
-                    progressComs = new Progress<int>[_threads];
 
                     for (int i = 0; i < _threads; i++)
                     {
                         listWithPBars.Add(new ProgressBar() { Width = 300, Height = 30, Maximum = 1000, Margin = new Thickness(2) });
-                        spBars.Children.Add(listWithPBars[listWithPBars.Count - 1]);
-                        int j = listWithPBars.Count - 1;
-                        progressComs[i] = new Progress<int>((x) => refreshProgressBar(x, listWithPBars[j]));
                     }
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Threads)));
+                    CreateAndShowPBars(listWithPBars);
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Threads))); ;
                 }
             }
         }
@@ -66,19 +62,24 @@ namespace CalculationWithMultiThreads
                 }
             }
         }
-
+        private void CreateAndShowPBars(List<ProgressBar> listWithPBars)
+        {
+            spBars.Children.Clear();
+            progressComs = new Progress<int>[listWithPBars.Count];
+            for (int i = 0; i < listWithPBars.Count; i++)
+            {
+                spBars.Children.Add(listWithPBars[i]);
+                int j = i;
+                progressComs[i] = new Progress<int>((x) => refreshProgressBar(x, listWithPBars[j]));
+            }
+        }
         private async void StartGeneratingNumbers()
         {
             niceArray = new Int64[_numbers];
 
-            spBars.Children.Clear();
-
-            progressComs = new Progress<int>[1];
             listWithPBars = new List<ProgressBar>();
-
-            listWithPBars.Add(new ProgressBar() { Width = 300, Height = 30, Maximum = 1000 });
-            spBars.Children.Add(listWithPBars[listWithPBars.Count - 1]);
-            progressComs[0] = new Progress<int>((x) => refreshProgressBar(x, listWithPBars[0]));
+            listWithPBars.Add(new ProgressBar() { Width = 300, Height = 30, Maximum = 1000, Margin = new Thickness(2) });
+            CreateAndShowPBars(listWithPBars);
 
             tbOut.Text = "generating random numbers ...";
             tbOut.Background = Brushes.Red;
