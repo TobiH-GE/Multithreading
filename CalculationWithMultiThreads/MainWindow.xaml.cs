@@ -80,8 +80,7 @@ namespace CalculationWithMultiThreads
             tbOut.Text = "generating random numbers ..."; tbOut.Background = Brushes.Red;
 
             cancelTokenSource = new CancellationTokenSource();
-            workers = new Task<Int64>[1];
-            workers[0] = new Task<Int64>(() => CreateRandomArray(ref niceArray, progressComs[0], cancelTokenSource.Token));
+            workers = new Task<Int64>[] { new Task<Int64>(() => CreateRandomArray(ref niceArray, progressComs[0], cancelTokenSource.Token)) };
             workers[0].Start();
             await Task.WhenAll(workers[0]);
 
