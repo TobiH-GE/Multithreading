@@ -81,15 +81,15 @@ namespace CalculationWithMultiThreads
             listWithPBars.Add(new ProgressBar() { Width = 300, Height = 30, Maximum = 1000, Margin = new Thickness(2) });
             CreateAndShowPBars(listWithPBars);
 
-            tbOut.Text = "generating random numbers ...";
-            tbOut.Background = Brushes.Red;
+            tbOut.Text = "generating random numbers ..."; tbOut.Background = Brushes.Red;
+
             cancelTokenSource = new CancellationTokenSource();
             workers = new Task<Int64>[1];
             workers[0] = new Task<Int64>(() => CreateRandomArray(ref niceArray, progressComs[0], cancelTokenSource.Token));
             workers[0].Start();
             await Task.WhenAll(workers[0]);
-            tbOut.Background = Brushes.Green;
-            tbOut.Text = workers[0].Result.ToString();
+
+            tbOut.Text = workers[0].Result.ToString(); tbOut.Background = Brushes.Green;
 
             Threads = 4;
         }
@@ -99,8 +99,7 @@ namespace CalculationWithMultiThreads
         }
         private async void StartCalcMultiThread_Click(object sender, RoutedEventArgs e)
         {
-            tbOut.Text = "calculating segments...";
-            tbOut.Background = Brushes.Red;
+            tbOut.Text = "calculating segments..."; tbOut.Background = Brushes.Red;
 
             ArraySegment<Int64>[] segments = new ArraySegment<Int64>[_threads];
 
@@ -118,7 +117,6 @@ namespace CalculationWithMultiThreads
                 workers[i].Start();
             }
             await Task.WhenAll(workers);
-            tbOut.Background = Brushes.Green;
 
             Int64 result = 0;
             for (int i = 0; i < _threads; i++)
@@ -126,7 +124,7 @@ namespace CalculationWithMultiThreads
                 result += workers[i].Result;
             }
 
-            tbOut.Text = result.ToString();
+            tbOut.Background = Brushes.Green; tbOut.Text = result.ToString();
         }
         private void StartCalcSingleThread_Click(object sender, RoutedEventArgs e)
         {
