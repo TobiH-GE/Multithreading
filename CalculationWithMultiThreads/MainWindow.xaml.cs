@@ -122,7 +122,7 @@ namespace CalculationWithMultiThreads
                 result += workers[i].Result;
             }
 
-            tbOut.Background = Brushes.Green; tbOut.Text = result.ToString();
+            tbOut.Background = Brushes.Green; tbOut.Text = "sum: " + result.ToString() + " / avg: " + (result / Numbers).ToString();
         }
         private void StartCalcSingleThread_Click(object sender, RoutedEventArgs e)
         {
