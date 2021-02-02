@@ -15,8 +15,8 @@ namespace CalculationWithMultiThreads
         
         CancellationTokenSource cancelTokenSource;
 
-        int _threads;
-        Int64 _numbers;
+        int _threads = 1;
+        Int64 _numbers = 100000015;
         Int64[] niceArray;
         List<ProgressBar> listWithPBars;
         Progress<int>[] progressComs;
@@ -27,8 +27,6 @@ namespace CalculationWithMultiThreads
         {
             InitializeComponent();
             DataContext = this;
-            Threads = 1;
-            Numbers = 100000015;
             StartGeneratingNumbers();
         }
         public int Threads
@@ -43,7 +41,7 @@ namespace CalculationWithMultiThreads
 
                     for (int i = 0; i < _threads; i++)
                     {
-                        listWithPBars.Add(new ProgressBar() { Width = 300, Height = 30, Maximum = 1000, Margin = new Thickness(2) });
+                        listWithPBars.Add(new ProgressBar() { Style = FindResource("ProgressBarStyle") as Style });
                     }
                     CreateAndShowPBars(listWithPBars);
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Threads))); ;
@@ -62,7 +60,7 @@ namespace CalculationWithMultiThreads
                 }
             }
         }
-        private void CreateAndShowPBars(List<ProgressBar> listWithPBars)
+        private void CreateAndShowPBars(List<ProgressBar> listWithPBars) // TODO: return Progress<int>[] ?
         {
             spBars.Children.Clear();
             progressComs = new Progress<int>[listWithPBars.Count];
@@ -78,7 +76,7 @@ namespace CalculationWithMultiThreads
             niceArray = new Int64[_numbers];
 
             listWithPBars = new List<ProgressBar>();
-            listWithPBars.Add(new ProgressBar() { Width = 300, Height = 30, Maximum = 1000, Margin = new Thickness(2) });
+            listWithPBars.Add(new ProgressBar() { Style = FindResource("ProgressBarStyle") as Style });
             CreateAndShowPBars(listWithPBars);
 
             tbOut.Text = "generating random numbers ..."; tbOut.Background = Brushes.Red;
