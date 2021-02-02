@@ -21,6 +21,8 @@ namespace CalculationWithMultiThreads
         List<ProgressBar> listWithPBars;
         Progress<int>[] progressComs;
         Task<Int64>[] workers;
+        List<ArraySegment<Int64>> ListWithSegments = new List<ArraySegment<Int64>>();
+        int segmentSize = 1000;
         Random rnd = new Random();
 
         public MainWindow()
@@ -92,6 +94,44 @@ namespace CalculationWithMultiThreads
         {
             pb.Value = reportedProgress;
         }
+        private async void StartCalcMultiThreadQueue_Click(object sender, RoutedEventArgs e)
+        {
+            tbOut.Text = "calculating segments queued..."; tbOut.Background = Brushes.Red;
+
+            for (int i = 0; i < niceArray.Length / segmentSize; i++)
+            {
+                ListWithSegments.Add(new ArraySegment<Int64>(niceArray, i * segmentSize, segmentSize));
+            }
+            //ListWithSegments.Add(new ArraySegment<Int64>(niceArray, niceArray.Length - (niceArray.Length % segmentSize) - 1, niceArray.Length % segmentSize));
+
+            workers = new Task<Int64>[_threads];
+            cancelTokenSource = new CancellationTokenSource();
+
+            int g = 0;
+            while (g < ListWithSegments.Count)
+            {
+                for (int i = 0; i < _threads; i++)
+                {
+                    if (workers[i] == null || workers[i].IsCompleted)
+                    {
+                        int j = g;
+                        workers[i] = new Task<Int64>(() => Calc(ListWithSegments[j], progressComs[i], cancelTokenSource.Token));
+                        workers[i].Start();
+                        g++;
+                    }
+                }
+                await Task.WhenAny(workers);
+            }
+
+            Int64 result = 0;
+            for (int i = 0; i < _threads; i++)
+            {
+                result += workers[i].Result;
+            }
+
+            tbOut.Background = Brushes.Green; tbOut.Text = "sum: " + result.ToString() + " / avg: " + (result / Numbers).ToString();
+        }
+        
         private async void StartCalcMultiThread_Click(object sender, RoutedEventArgs e)
         {
             tbOut.Text = "calculating segments..."; tbOut.Background = Brushes.Red;

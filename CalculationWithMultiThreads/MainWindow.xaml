@@ -18,6 +18,7 @@
         <StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
                 <TextBox x:Name="tbNumbers" Width="100" Margin="2" Text="{Binding Numbers, Mode=TwoWay}"/>
+                <Button x:Name="btnStartCalcMultiThreadQueue" Margin="2" Width="120" Height="30" Content="Start Queued" Click="StartCalcMultiThreadQueue_Click"/>
                 <Button x:Name="btnStartCalcSingleThread" Margin="2" Width="120" Height="30" Content="Start 1 Thread" Click="StartCalcSingleThread_Click"/>
                 <Button x:Name="btnStartCalcMultiThread" Margin="2" Width="120" Height="30" Content="Start x Threads" Click="StartCalcMultiThread_Click"/>
                 <Button x:Name="btnStopCalc" Margin="2" Width="120" Height="30" Content="Stop" Click="StopCalc_Click"/>
