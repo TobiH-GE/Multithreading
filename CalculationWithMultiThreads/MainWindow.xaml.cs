@@ -107,32 +107,21 @@ namespace CalculationWithMultiThreads
             cancelTokenSource = new CancellationTokenSource();
             workers = new Task<Int64>[_threads];
 
-            Task observer = new Task(() => WorkerObserver(workers));
-            observer.Start();
-            await Task.WhenAll(observer);
+            for (int i = 0; i < _threads; i++)
+            {
+                int j = i;
+                workers[i] = new Task<Int64>(() => Calc(ListWithSegments[j], progressComs[j], cancelTokenSource.Token));
+                workers[i].Start();
+            }
+            await Task.WhenAll(workers);
 
-            Int64 result = 1;
+            Int64 result = 0;
+            for (int i = 0; i < _threads; i++)
+            {
+                result += workers[i].Result;
+            }
 
             tbOut.Background = Brushes.Green; tbOut.Text = "sum: " + result.ToString() + " / avg: " + (result / Numbers).ToString();
-        }
-        private async void WorkerObserver(Task<Int64>[] workers) //TODO: correct code, code not working
-        {
-            int g = 0;
-            while (g < ListWithSegments.Count)
-            {
-                for (int i = 0; i < _threads; i++)
-                {
-                    int j = i;
-                    int h = g;
-                    if (workers[i] == null || workers[i].IsCompleted)
-                    {
-                        workers[i] = new Task<Int64>(() => Calc(ListWithSegments[h], progressComs[j], cancelTokenSource.Token));
-                        workers[i].Start();
-                        g++;
-                    }
-                }
-                await Task.WhenAny(workers);
-            }
         }
         
         private async void StartCalcMultiThread_Click(object sender, RoutedEventArgs e)
