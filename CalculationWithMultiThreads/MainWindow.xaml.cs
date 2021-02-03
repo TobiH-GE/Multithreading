@@ -15,6 +15,8 @@ namespace CalculationWithMultiThreads
         
         CancellationTokenSource cancelTokenSource;
 
+        private readonly object IndexLock = new object();
+
         int _threads = 1;
         Int64 _numbers = 100000015;
         Int64[] niceArray;
@@ -103,7 +105,8 @@ namespace CalculationWithMultiThreads
             {
                 ListWithSegments.Add(new ArraySegment<Int64>(niceArray, i * segmentSize, segmentSize));
             }
-            ListWithSegments.Add(new ArraySegment<Int64>(niceArray, niceArray.Length - (niceArray.Length % segmentSize) - 1, niceArray.Length % segmentSize));
+            if (niceArray.Length % segmentSize > 0)
+                ListWithSegments.Add(new ArraySegment<Int64>(niceArray, niceArray.Length - (niceArray.Length % segmentSize), niceArray.Length % segmentSize));
 
             cancelTokenSource = new CancellationTokenSource();
             workers = new Task<Int64>[_threads];
@@ -114,9 +117,9 @@ namespace CalculationWithMultiThreads
                 workers[i] = new Task<Int64>(() => Calc(ListWithSegments[i], progressComs[j], cancelTokenSource.Token));
                 workers[i].Start();
             }
-            segmentIndex = ListWithSegments.Count - 1;
+            segmentIndex = _threads;
             Int64 result = 0;
-            while (segmentIndex > 0) // TODO: correct code, NOT WORKING, result wrong!!!
+            while (segmentIndex < ListWithSegments.Count) // TODO: correct code, NOT WORKING, result wrong!!!
             {
                 Task<Int64> finishedTask = await Task.WhenAny(workers);
                 for (int i = 0; i < _threads; i++)
@@ -126,13 +129,14 @@ namespace CalculationWithMultiThreads
                         result += workers[i].Result;
                         int j = i;
                         int counter;
-                        lock (workers)
+                        lock (IndexLock)
                         {
                             counter = segmentIndex;
-                            segmentIndex--;
+                            segmentIndex++;
                         }
                         workers[i] = new Task<Int64>(() => Calc(ListWithSegments[counter], progressComs[j], cancelTokenSource.Token));
                         workers[i].Start();
+                        break;
                     }
                 }
             }
