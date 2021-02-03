@@ -22,7 +22,7 @@ namespace CalculationWithMultiThreads
         Progress<int>[] progressComs;
         Task<Int64>[] workers;
         List<ArraySegment<Int64>> ListWithSegments = new List<ArraySegment<Int64>>();
-        int segmentSize = 1000;
+        int segmentSize = 1000000;
         Random rnd = new Random();
 
         public MainWindow()
@@ -113,7 +113,21 @@ namespace CalculationWithMultiThreads
                 workers[i] = new Task<Int64>(() => Calc(ListWithSegments[j], progressComs[j], cancelTokenSource.Token));
                 workers[i].Start();
             }
-            await Task.WhenAll(workers);
+            
+            while (ListWithSegments.Count > 0) // TODO: get result, remove blocking, NOT WORKING
+            {
+                Task<Int64> finishedTask = await Task.WhenAny(workers);
+                for (int i = 0; i < _threads; i++)
+                {
+                    if (finishedTask == workers[i])
+                    {
+                        int j = i;
+                        workers[i] = new Task<Int64>(() => Calc(ListWithSegments[ListWithSegments.Count - 1], progressComs[j], cancelTokenSource.Token));
+                        workers[i].Start();
+                        ListWithSegments.RemoveAt(ListWithSegments.Count - 1);
+                    }
+                }
+            }
 
             Int64 result = 0;
             for (int i = 0; i < _threads; i++)
