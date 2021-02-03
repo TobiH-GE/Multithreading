@@ -126,21 +126,20 @@ namespace CalculationWithMultiThreads
                 {
                     if (finishedTask == workers[i])
                     {
-                        result += workers[i].Result;
                         int j = i;
-                        int counter;
+                        int index;
                         lock (IndexLock)
                         {
-                            counter = segmentIndex;
+                            result += workers[i].Result;
+                            index = segmentIndex;
                             segmentIndex++;
                         }
-                        workers[i] = new Task<Int64>(() => Calc(ListWithSegments[counter], progressComs[j], cancelTokenSource.Token));
+                        workers[i] = new Task<Int64>(() => Calc(ListWithSegments[index], progressComs[j], cancelTokenSource.Token));
                         workers[i].Start();
                         break;
                     }
                 }
             }
-
             tbOut.Background = Brushes.Green; tbOut.Text = "sum: " + result.ToString() + " / avg: " + (result / Numbers).ToString();
         }
         
