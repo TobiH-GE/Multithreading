@@ -113,11 +113,11 @@ namespace CalculationWithMultiThreads
 
             for (int i = 0; i < _threads; i++)
             {
-                int j = i;
-                workers[i] = new Task<Int64>(() => Calc(ListWithSegments[i], progressComs[j], cancelTokenSource.Token));
+                workers[i] = new Task<Int64>(() => { return 0; } );
                 workers[i].Start();
             }
-            segmentIndex = _threads;
+
+            segmentIndex = 0;
             Int64 result = 0;
             while (segmentIndex < ListWithSegments.Count) // TODO: correct code, NOT WORKING, result wrong!!!
             {
