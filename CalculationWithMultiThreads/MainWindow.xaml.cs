@@ -117,9 +117,8 @@ namespace CalculationWithMultiThreads
                 workers[i].Start();
             }
 
-            segmentIndex = 0;
             Int64 result = 0;
-            while (segmentIndex < ListWithSegments.Count) // TODO: correct code, NOT WORKING, result wrong!!!
+            while (ListWithSegments.Count > 0) // TODO: correct code, NOT WORKING, result wrong!!!
             {
                 Task<Int64> finishedTask = await Task.WhenAny(workers);
                 for (int i = 0; i < _threads; i++)
@@ -128,14 +127,11 @@ namespace CalculationWithMultiThreads
                     {
                         int j = i;
                         int index;
-                        lock (IndexLock)
-                        {
-                            result += workers[i].Result;
-                            index = segmentIndex;
-                            segmentIndex++;
-                        }
+                        result += workers[i].Result;
+                        index = ListWithSegments.Count - 1;
                         workers[i] = new Task<Int64>(() => Calc(ListWithSegments[index], progressComs[j], cancelTokenSource.Token));
                         workers[i].Start();
+                        ListWithSegments.RemoveAt(index);
                         break;
                     }
                 }
