@@ -23,7 +23,6 @@ namespace CalculationWithMultiThreads
         List<ProgressBar> listWithPBars;
         Progress<int>[] progressComs;
         List<Task<Int64>> workers = new List<Task<Int64>>();
-        List<ArraySegment<Int64>> ListWithSegments = new List<ArraySegment<Int64>>();
         int segmentSize = 1000000;
         Random rnd = new Random();
 
@@ -99,7 +98,8 @@ namespace CalculationWithMultiThreads
         private async void StartCalcMultiThreadSeg_Click(object sender, RoutedEventArgs e)
         {
             tbOut.Text = "calculating segments queued..."; tbOut.Background = Brushes.Red;
-            ListWithSegments.Clear();
+
+            List<ArraySegment<Int64>> ListWithSegments = new List<ArraySegment<Int64>>();
             for (int i = 0; i < niceArray.Length / segmentSize; i++)
                 ListWithSegments.Add(new ArraySegment<Int64>(niceArray, i * segmentSize, segmentSize));
             if (niceArray.Length % segmentSize > 0)
