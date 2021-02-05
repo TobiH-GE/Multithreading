@@ -111,9 +111,10 @@ namespace CalculationWithMultiThreads
 
             Int64 result = 0;
             int counter = 0;
+
             while (counter < ListWithSegments.Count) // TODO: optimize code
             {
-                if (workers.Count <= _threads)
+                while (workers.Count <= _threads && counter < ListWithSegments.Count - workers.Count)
                 {
                     workers.Add(Task<Int64>.Run(() => Calc(ListWithSegments[counter++], progressComs[0], cancelTokenSource.Token)));
                 }
