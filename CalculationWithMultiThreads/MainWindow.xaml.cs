@@ -60,6 +60,7 @@ namespace CalculationWithMultiThreads
                 if (_numbers != value && value != -1)
                 {
                     _numbers = value;
+                    StartGeneratingNumbers();
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Numbers)));
                 }
             }

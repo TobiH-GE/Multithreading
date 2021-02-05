@@ -17,12 +17,12 @@
     <Grid>
         <StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                <TextBox x:Name="tbNumbers" Width="100" Margin="2" Text="{Binding Numbers, Mode=TwoWay}"/>
-                <Button x:Name="btnStartCalcMultiThreadSeg" Margin="2" Width="120" Height="30" Content="Start Queued" Click="StartCalcMultiThreadSeg_Click"/>
-                <Button x:Name="btnStartCalcSingleThread" Margin="2" Width="120" Height="30" Content="Start 1 Thread" Click="StartCalcSingleThread_Click"/>
-                <Button x:Name="btnStartCalcMultiThread" Margin="2" Width="120" Height="30" Content="Start x Threads" Click="StartCalcMultiThread_Click"/>
-                <Button x:Name="btnStopCalc" Margin="2" Width="120" Height="30" Content="Stop" Click="StopCalc_Click"/>
-                <TextBox x:Name="tbOut" Width="200" Height="30" Text=""/>
+                <TextBox x:Name="tbNumbers" Width="150" Margin="2" Text="{Binding Numbers, Mode=TwoWay}"/>
+                <Button x:Name="btnStartCalcMultiThreadSeg" Margin="2" Width="100" Height="30" Content="Start Queued" Click="StartCalcMultiThreadSeg_Click"/>
+                <Button x:Name="btnStartCalcSingleThread" Margin="2" Width="100" Height="30" Content="Start 1 Thread" Click="StartCalcSingleThread_Click"/>
+                <Button x:Name="btnStartCalcMultiThread" Margin="2" Width="100" Height="30" Content="Start x Threads" Click="StartCalcMultiThread_Click"/>
+                <Button x:Name="btnStopCalc" Margin="2" Width="100" Height="30" Content="Stop" Click="StopCalc_Click"/>
+                <TextBox x:Name="tbOut" Width="150" Height="30" Text=""/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Slider x:Name="sldThreads" Margin="2" Width="500" Minimum="1" Maximum="100" Value="{Binding Threads, Mode=TwoWay}"/>
