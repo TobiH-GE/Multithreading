@@ -112,7 +112,7 @@ namespace CalculationWithMultiThreads
             Int64 result = 0;
             int counter = 0;
 
-            while (counter < ListWithSegments.Count) // TODO: optimize code
+            while (counter < ListWithSegments.Count || workers.Count > 0) // TODO: optimize code
             {
                 while (workers.Count <= _threads && counter < ListWithSegments.Count - workers.Count)
                 {
@@ -122,12 +122,7 @@ namespace CalculationWithMultiThreads
                 result += finishedTask.Result;
                 workers.Remove(finishedTask);
             }
-            while (workers.Count > 0)
-            {
-                Task<Int64> lastTasks = await Task.WhenAny(workers);
-                result += lastTasks.Result;
-                workers.Remove(lastTasks);
-            }
+            
 
             tbOut.Background = Brushes.Green; tbOut.Text = "sum: " + result.ToString() + " / avg: " + (result / Numbers).ToString();
         }
