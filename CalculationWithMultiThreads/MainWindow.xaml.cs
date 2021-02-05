@@ -100,9 +100,7 @@ namespace CalculationWithMultiThreads
             tbOut.Text = "calculating segments queued..."; tbOut.Background = Brushes.Red;
             ListWithSegments.Clear();
             for (int i = 0; i < niceArray.Length / segmentSize; i++)
-            {
                 ListWithSegments.Add(new ArraySegment<Int64>(niceArray, i * segmentSize, segmentSize));
-            }
             if (niceArray.Length % segmentSize > 0)
                 ListWithSegments.Add(new ArraySegment<Int64>(niceArray, niceArray.Length - (niceArray.Length % segmentSize), niceArray.Length % segmentSize));
 
@@ -114,7 +112,7 @@ namespace CalculationWithMultiThreads
 
             while (counter < ListWithSegments.Count || workers.Count > 0) // TODO: optimize code
             {
-                while (workers.Count <= _threads && counter < ListWithSegments.Count - workers.Count)
+                while (workers.Count <= _threads && counter < ListWithSegments.Count) //  - workers.Count
                 {
                     int j = counter++;
                     workers.Add(Task<Int64>.Run(() => Calc(ListWithSegments[j], progressComs[0], cancelTokenSource.Token)));
@@ -123,9 +121,7 @@ namespace CalculationWithMultiThreads
                 result += finishedTask.Result;
                 workers.Remove(finishedTask);
             }
-            
-
-            tbOut.Background = Brushes.Green; tbOut.Text = "sum: " + result.ToString() + " / avg: " + (result / Numbers).ToString();
+            tbOut.Text = "sum: " + result.ToString() + " / avg: " + (result / Numbers).ToString(); tbOut.Background = Brushes.Green;
         }
         
         private async void StartCalcMultiThread_Click(object sender, RoutedEventArgs e)
