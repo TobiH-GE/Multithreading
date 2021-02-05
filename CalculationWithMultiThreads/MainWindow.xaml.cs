@@ -122,6 +122,13 @@ namespace CalculationWithMultiThreads
                 result += finishedTask.Result;
                 workers.Remove(finishedTask);
             }
+            while (workers.Count > 0)
+            {
+                Task<Int64> lastTasks = await Task.WhenAny(workers);
+                result += lastTasks.Result;
+                workers.Remove(lastTasks);
+            }
+
             tbOut.Background = Brushes.Green; tbOut.Text = "sum: " + result.ToString() + " / avg: " + (result / Numbers).ToString();
         }
         
