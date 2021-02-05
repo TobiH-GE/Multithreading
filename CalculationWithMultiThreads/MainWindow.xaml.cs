@@ -116,7 +116,8 @@ namespace CalculationWithMultiThreads
             {
                 while (workers.Count <= _threads && counter < ListWithSegments.Count - workers.Count)
                 {
-                    workers.Add(Task<Int64>.Run(() => Calc(ListWithSegments[counter++], progressComs[0], cancelTokenSource.Token)));
+                    int j = counter++;
+                    workers.Add(Task<Int64>.Run(() => Calc(ListWithSegments[j], progressComs[0], cancelTokenSource.Token)));
                 }
                 Task<Int64> finishedTask = await Task.WhenAny(workers);
                 result += finishedTask.Result;
