@@ -108,23 +108,19 @@ namespace CalculationWithMultiThreads
 
             cancelTokenSource = new CancellationTokenSource();
             workers.Clear();
-            workers.Add(Task<Int64>.Run(() => { return (Int64)0; }));
 
             Int64 result = 0;
             int counter = 0;
             while (counter < ListWithSegments.Count) // TODO: optimize code
             {
-                Task<Int64> finishedTask = await Task.WhenAny(workers);
-                if (counter == ListWithSegments.Count) break;
                 if (workers.Count <= _threads)
                 {
-                    result += finishedTask.Result;
-                    workers.Remove(finishedTask);
                     workers.Add(Task<Int64>.Run(() => Calc(ListWithSegments[counter++], progressComs[0], cancelTokenSource.Token)));
                 }
+                Task<Int64> finishedTask = await Task.WhenAny(workers);
+                result += finishedTask.Result;
+                workers.Remove(finishedTask);
             }
-            Task<Int64> lastTask = await Task.WhenAny(workers);
-            result += lastTask.Result;
             tbOut.Background = Brushes.Green; tbOut.Text = "sum: " + result.ToString() + " / avg: " + (result / Numbers).ToString();
         }
         
