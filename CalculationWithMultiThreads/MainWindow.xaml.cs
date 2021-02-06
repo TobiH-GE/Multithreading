@@ -189,7 +189,7 @@ namespace CalculationWithMultiThreads
             {
                 array[counter] = rnd.Next(100);
                 counter++;
-                if (counter % divider == 0)
+                if (divider > 0 && counter % divider == 0)
                 {
                     progress.Report(counter / divider);
                     if (CancelToken.IsCancellationRequested) return -1;
