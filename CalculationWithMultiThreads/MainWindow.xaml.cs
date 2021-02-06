@@ -37,7 +37,7 @@ namespace CalculationWithMultiThreads
             get { return _threads; }
             set
             {
-                if (_threads != value && value != -1)
+                if (_threads != value)
                 {
                     _threads = value;
                     listWithPBars = new List<ProgressBar>();
@@ -79,13 +79,16 @@ namespace CalculationWithMultiThreads
         {
             niceArray = new Int64[_numbers];
 
-            CreateAndShowPBars(new List<ProgressBar>() { new ProgressBar() { Style = FindResource("ProgressBarStyle") as Style } });
-
             tbOut.Text = "generating random numbers ..."; tbOut.Background = Brushes.Red;
 
+            Threads = 1;
+
+            CreateAndShowPBars(new List<ProgressBar>() { new ProgressBar() { Style = FindResource("ProgressBarStyle") as Style } });
+
             cancelTokenSource = new CancellationTokenSource();
+            workers.Clear();
             workers.Add(Task<Int64>.Run(() => CreateRandomArray(ref niceArray, progressComs[0], cancelTokenSource.Token)));
-            await Task.WhenAll(workers[0]);
+            await Task.WhenAll(workers);
 
             tbOut.Text = workers[0].Result.ToString(); tbOut.Background = Brushes.Green;
 
@@ -169,7 +172,7 @@ namespace CalculationWithMultiThreads
             {
                 result += segementarray[counter] + rnd.Next(1); // + rnd.Next(1) add some extra work
                 counter++;
-                if (divider > 0 && counter % 1000 == 0)
+                if (divider > 0 && counter % divider == 0)
                 {
                     progress.Report(counter / divider);
                     if (CancelToken.IsCancellationRequested) return 0;
