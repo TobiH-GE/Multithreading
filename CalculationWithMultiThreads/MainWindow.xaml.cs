@@ -103,10 +103,12 @@ namespace CalculationWithMultiThreads
             tbOut.Text = "calculating segments queued..."; tbOut.Background = Brushes.Red;
 
             List<ArraySegment<Int64>> ListWithSegments = new List<ArraySegment<Int64>>();
-            for (int i = 0; i < niceArray.Length / segmentSize; i++)
+            for (int i = 0; i < (niceArray.Length / segmentSize) - 1; i++)
                 ListWithSegments.Add(new ArraySegment<Int64>(niceArray, i * segmentSize, segmentSize));
+            int lastSegmentSize = segmentSize;
             if (niceArray.Length % segmentSize > 0)
-                ListWithSegments.Add(new ArraySegment<Int64>(niceArray, niceArray.Length - (niceArray.Length % segmentSize), niceArray.Length % segmentSize));
+                lastSegmentSize += niceArray.Length % segmentSize;
+            ListWithSegments.Add(new ArraySegment<Int64>(niceArray, niceArray.Length - lastSegmentSize, lastSegmentSize));
 
             cancelTokenSource = new CancellationTokenSource();
             workers.Clear();
