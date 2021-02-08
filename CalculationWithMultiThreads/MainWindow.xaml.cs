@@ -115,7 +115,7 @@ namespace CalculationWithMultiThreads
 
             while (counter < ListWithSegments.Count || workers.Count > 0) // TODO: optimize code
             {
-                while (workers.Count <= _threads && counter < ListWithSegments.Count) //  - workers.Count
+                while (workers.Count <= _threads && counter < ListWithSegments.Count)
                 {
                     int pID = counter % _threads;
                     int j = counter++;
@@ -164,7 +164,7 @@ namespace CalculationWithMultiThreads
         {
             Int64 result = 0;
             int counter = 0;
-            int divider = segementarray.Count / 1000;
+            int divider = segementarray.Count / 100;
 
             while (counter < segementarray.Count)
             {
@@ -181,7 +181,7 @@ namespace CalculationWithMultiThreads
         public Int64 CreateRandomArray(ref Int64[] array, IProgress<int> progress, CancellationToken CancelToken)
         {
             int counter = 0;
-            int divider = array.Length / 1000;
+            int divider = array.Length / 100;
 
             while (counter < array.Length)
             {
