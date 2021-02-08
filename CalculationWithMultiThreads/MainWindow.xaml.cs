@@ -105,10 +105,7 @@ namespace CalculationWithMultiThreads
             List<ArraySegment<Int64>> ListWithSegments = new List<ArraySegment<Int64>>();
             for (int i = 0; i < (niceArray.Length / segmentSize) - 1; i++)
                 ListWithSegments.Add(new ArraySegment<Int64>(niceArray, i * segmentSize, segmentSize));
-            int lastSegmentSize = segmentSize;
-            if (niceArray.Length % segmentSize > 0)
-                lastSegmentSize += niceArray.Length % segmentSize;
-            ListWithSegments.Add(new ArraySegment<Int64>(niceArray, niceArray.Length - lastSegmentSize, lastSegmentSize));
+            ListWithSegments.Add(new ArraySegment<Int64>(niceArray, niceArray.Length - segmentSize - niceArray.Length % segmentSize, segmentSize + niceArray.Length % segmentSize));
 
             cancelTokenSource = new CancellationTokenSource();
             workers.Clear();
