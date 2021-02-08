@@ -22,7 +22,7 @@ namespace CalculationWithMultiThreads
         Int64[] niceArray;
         List<ProgressBar> listWithPBars;
         Progress<int>[] progressComs;
-        List<Task<Int64>> workers = new List<Task<Int64>>();
+        LinkedList<Task<Int64>> workers = new LinkedList<Task<Int64>>();
         int segmentSize = 1000000;
         Random rnd = new Random();
 
@@ -87,10 +87,10 @@ namespace CalculationWithMultiThreads
 
             cancelTokenSource = new CancellationTokenSource();
             workers.Clear();
-            workers.Add(Task<Int64>.Run(() => CreateRandomArray(ref niceArray, progressComs[0], cancelTokenSource.Token)));
+            workers.AddLast(Task<Int64>.Run(() => CreateRandomArray(ref niceArray, progressComs[0], cancelTokenSource.Token)));
             await Task.WhenAll(workers);
 
-            tbOut.Text = workers[0].Result.ToString(); tbOut.Background = Brushes.Green;
+            tbOut.Text = workers.Last.Value.Result.ToString(); tbOut.Background = Brushes.Green;
 
             Threads = 4;
         }
@@ -122,7 +122,7 @@ namespace CalculationWithMultiThreads
                 {
                     int pID = counter % _threads;
                     int j = counter++;
-                    workers.Add(Task<Int64>.Run(() => Calc(ListWithSegments[j], progressComs[pID], cancelTokenSource.Token)));
+                    workers.AddLast(Task<Int64>.Run(() => Calc(ListWithSegments[j], progressComs[pID], cancelTokenSource.Token)));
                 }
                 Task<Int64> finishedTask = await Task.WhenAny(workers);
                 result += finishedTask.Result;
@@ -147,16 +147,15 @@ namespace CalculationWithMultiThreads
                     segments[i] = new ArraySegment<Int64>(niceArray, (niceArray.Length / _threads) * i, niceArray.Length / _threads + niceArray.Length % _threads);
                 else
                     segments[i] = new ArraySegment<Int64>(niceArray, (niceArray.Length / _threads) * i, niceArray.Length / _threads);
-                workers.Add(Task<Int64>.Run(() => Calc(segments[j], progressComs[j], cancelTokenSource.Token)));
+                workers.AddLast(Task<Int64>.Run(() => Calc(segments[j], progressComs[j], cancelTokenSource.Token)));
             }
             await Task.WhenAll(workers);
 
             Int64 result = 0;
-            for (int i = 0; i < _threads; i++)
+            foreach (var item in workers)
             {
-                result += workers[i].Result;
+                result += item.Result;
             }
-
             tbOut.Background = Brushes.Green; tbOut.Text = "sum: " + result.ToString() + " / avg: " + (result / Numbers).ToString();
         }
         private void StartCalcSingleThread_Click(object sender, RoutedEventArgs e)
